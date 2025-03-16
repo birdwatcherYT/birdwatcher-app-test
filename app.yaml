@@ -9,6 +9,9 @@ env_variables: # 環境変数
   OAUTH2_CLIENT_SECRET: "oauth2-client-secret"
   REDIRECT_URL: デプロイしてから生成したアドレスを記載して再デプロイする
 
+# includes: # パスワードを記録する場合
+#   - env_variables.yaml
+
 service: streamlit-app-test
 
 automatic_scaling:

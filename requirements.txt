@@ -2,3 +2,4 @@ streamlit
 google-auth-oauthlib
 google-cloud-secret-manager
 python-dotenv
+streamlit_javascript

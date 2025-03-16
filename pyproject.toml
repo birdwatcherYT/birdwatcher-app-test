@@ -9,4 +9,5 @@ dependencies = [
     "google-cloud-secret-manager>=2.23.1",
     "python-dotenv>=1.0.1",
     "streamlit>=1.43.2",
+    "streamlit-javascript>=0.1.5",
 ]
