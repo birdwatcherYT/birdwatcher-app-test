@@ -22,3 +22,15 @@ if ip_address:
     st.write(f"クライアントIPアドレス: {ip_address}")
 else:
     st.write("クライアントIPアドレスを取得できませんでした。")
+
+def get_client_ip_render():
+    ip_address = st.context.headers.get("X-Forwarded-For")
+    if ip_address:
+        return ip_address.split(',').strip()
+    return None
+
+ip_address2 = get_client_ip_render()
+if ip_address2:
+    st.write(f"クライアントIPアドレス: {ip_address2}")
+else:
+    st.write("クライアントIPアドレスを取得できませんでした。")
