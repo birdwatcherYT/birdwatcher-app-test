@@ -4,11 +4,11 @@ import google.auth.transport.requests
 import google.oauth2.id_token
 import requests
 import os
-from secret import get_secret
+from .secret import get_secret
+from dotenv import load_dotenv
 
-if not os.getenv("CLOUD_RUN"): # ローカル実行の時のみ.envから環境変数を読む
-    from dotenv import load_dotenv
-    load_dotenv()
+# ローカル用
+load_dotenv()
 
 PROJECT_ID = os.getenv("PROJECT_ID")
 OAUTH2_CLIENT_ID = os.getenv("OAUTH2_CLIENT_ID")
@@ -44,7 +44,7 @@ def login():
         return
 
     # ログイン画面
-    st.title("Google Sign-In")
+    st.title("Google認証")
     if "code" not in st.query_params:
         flow = get_google_flow()
         auth_url, _ = flow.authorization_url(prompt="consent")
@@ -67,13 +67,13 @@ def login():
             user_email = id_info.get("email", "")
             if not any(user_email.endswith("@" + domain) for domain in allowed_domains):
                 st.error("このアカウントではログインできません。")
-                return
+                st.stop()
 
             # ここで認証されたユーザー情報（例：メールアドレスなど）を利用できます
             st.success(f"ログイン成功！ようこそ、{id_info.get('email')}さん")
 
             # 認証に成功したので、セッションステートに反映し画面を切り替え
-            st.session_state["authenticated"] = True
+            st.session_state.authenticated = True
             st.query_params.pop("code")
             st.rerun()
         except ValueError as e:

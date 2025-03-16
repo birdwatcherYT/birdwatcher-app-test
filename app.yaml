@@ -1,0 +1,16 @@
+runtime: custom # Docker使う場合
+env: flex
+entrypoint: uv run streamlit run app.py --server.port $PORT --server.headless true
+
+env_variables: # 環境変数
+  STREAMLIT_SERVER_HEADLESS: "true"
+  PROJECT_ID: "プロジェクトID"
+  OAUTH2_CLIENT_ID: "oauth2-client-id"
+  OAUTH2_CLIENT_SECRET: "oauth2-client-secret"
+  REDIRECT_URL: デプロイしてから生成したアドレスを記載して再デプロイする
+
+service: streamlit-app-test
+
+automatic_scaling:
+  min_num_instances: 1
+  max_num_instances: 2

@@ -1,7 +1,7 @@
 import streamlit as st
-# from src.oauth import login
+from src.oauth import login
 # from src.basic import login
-from src.ip_auth import login
+# from src.ip_auth import login
 
 def main():
     # 認証

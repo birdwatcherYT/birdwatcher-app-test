@@ -1,9 +1,9 @@
 import os
 import streamlit as st
+from dotenv import load_dotenv
 
-if not os.getenv("CLOUD_RUN"): # ローカル実行の時のみ.envから環境変数を読む
-    from dotenv import load_dotenv
-    load_dotenv()
+# ローカル用
+load_dotenv()
 
 USERNAME = os.environ.get("BASIC_AUTH_USERNAME")
 PASSWORD = os.environ.get("BASIC_AUTH_PASSWORD")

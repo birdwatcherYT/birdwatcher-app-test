@@ -1,10 +1,10 @@
 import streamlit as st
 import os
 import requests
+from dotenv import load_dotenv
 
-if not os.getenv("CLOUD_RUN"): # ローカル実行の時のみ.envから環境変数を読む
-    from dotenv import load_dotenv
-    load_dotenv()
+# ローカル用
+load_dotenv()
 
 IP_ADDRESSES = os.environ.get("IP_ADDRESSES", "").split(",")
 
