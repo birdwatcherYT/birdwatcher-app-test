@@ -26,7 +26,7 @@ else:
 def get_client_ip_render():
     ip_address = st.context.headers.get("X-Forwarded-For")
     if ip_address:
-        return ip_address.split(',').strip()
+        return ip_address.split(',')
     return None
 
 ip_address2 = get_client_ip_render()
