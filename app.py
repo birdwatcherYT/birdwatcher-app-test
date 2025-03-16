@@ -1,36 +1,15 @@
 import streamlit as st
-from streamlit_javascript import st_javascript
+# from src.oauth import login
+# from src.basic import login
+from src.ip_auth import login
 
-def get_client_ip():
-    url = 'https://api.ipify.org?format=json'
-    script = (
-        f'await fetch("{url}").then('
-        'function(response) {'
-        'return response.json();'
-        '})'
-    )
-    try:
-        result = st_javascript(script)
-        if isinstance(result, dict) and 'ip' in result:
-            return result['ip']
-    except:
-        pass
-    return None
+def main():
+    # 認証
+    login()
 
-ip_address = get_client_ip()
-if ip_address:
-    st.write(f"クライアントIPアドレス: {ip_address}")
-else:
-    st.write("クライアントIPアドレスを取得できませんでした。")
+    # 認証済みの場合、メインアプリの画面を表示
+    st.title("メインアプリ画面")
+    st.write("ここにログイン後のアプリコンテンツを表示します。")
 
-def get_client_ip_render():
-    ip_address = st.context.headers.get("X-Forwarded-For")
-    if ip_address:
-        return ip_address.split(',')
-    return None
-
-ip_address2 = get_client_ip_render()
-if ip_address2:
-    st.write(f"クライアントIPアドレス: {ip_address2}")
-else:
-    st.write("クライアントIPアドレスを取得できませんでした。")
+if __name__ == "__main__":
+    main()
