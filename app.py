@@ -1,30 +1,38 @@
 import streamlit as st
-import requests
+from flask import Flask, request
+import threading
 
-# 外部API (https://api.ipify.org) からIPアドレスを取得する関数
-def get_ipify_ip():
-    try:
-        response = requests.get('https://api.ipify.org?format=json')
-        ip_address = response.json()['ip']
-        return ip_address
-    except requests.exceptions.RequestException as e:
-        return f"IPify APIの取得に失敗: {e}"
+# Flask アプリケーション
+app = Flask(__name__)
 
-# X-Forwarded-For ヘッダーからIPアドレスを取得する関数
-def get_forwarded_for_ip():
-    # Render などでは `X-Forwarded-For` がリクエストヘッダーに含まれる
-    forwarded_for = st.experimental_get_query_params().get('X-Forwarded-For', [None])[0]
-    # forwarded_for = st.query_params.get('X-Forwarded-For', [None])[0]
-    if forwarded_for:
-        return forwarded_for.split(',')[0]  # 最初のIPアドレスを返す
-    return 'X-Forwarded-For ヘッダーが見つかりません'
+# Flaskのエンドポイントで、X-Forwarded-For ヘッダーから IP アドレスを取得
+@app.route('/get_ip')
+def get_ip():
+    forwarded_for = request.headers.get('X-Forwarded-For', 'X-Forwarded-For ヘッダーが見つかりません')
+    return forwarded_for
 
 # Streamlitアプリケーション
-st.title("IPアドレス確認のテスト")
+st.title("IPアドレス確認")
 
-# それぞれの取得方法を実行
-ipify_ip = get_ipify_ip()
-forwarded_for_ip = get_forwarded_for_ip()
+# Flask サーバーをバックグラウンドで起動
+def start_flask():
+    app.run(host="0.0.0.0", port=5000)
 
-st.write(f"IPify API から取得したIPアドレス: {ipify_ip}")
-st.write(f"X-Forwarded-For ヘッダーから取得したIPアドレス: {forwarded_for_ip}")
+flask_thread = threading.Thread(target=start_flask)
+flask_thread.daemon = True
+flask_thread.start()
+
+# Flask サーバーから IP アドレスを取得する
+import requests
+
+# Render や Cloud Run にデプロイされている場合、このURLにリクエストを送る
+flask_ip_url = "http://127.0.0.1:5000/get_ip"
+
+try:
+    response = requests.get(flask_ip_url)
+    ip_address = response.text
+    st.write(f"X-Forwarded-For ヘッダーから取得したIPアドレス: {ip_address}")
+except requests.exceptions.RequestException as e:
+    st.write(f"Flaskサーバーへのリクエストに失敗しました: {e}")
+
+st.write("Streamlit アプリで `X-Forwarded-For` ヘッダーから IP アドレスを取得しています。")
